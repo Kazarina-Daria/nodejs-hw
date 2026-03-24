@@ -10,7 +10,7 @@ title : {
 },
 content :{
   type: String,
-  default : false,
+  default : "",
   trim : true,
 },
 tag :{
