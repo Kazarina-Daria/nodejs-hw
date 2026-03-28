@@ -25,6 +25,8 @@ export const noteSchema = new mongoose.Schema(
   },
 );
 
-noteSchema.index({ content: 'text' });
-noteSchema.index({ title: 'text' });
+noteSchema.index(
+  { title: 'text', content: 'text' },
+  { weights: { title: 5, content: 1 }, default_language: 'english' },
+);
 export const Note = model('Note', noteSchema);
