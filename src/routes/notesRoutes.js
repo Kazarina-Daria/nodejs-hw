@@ -2,8 +2,11 @@ import { getNoteById, getAllNotes, createNote, deleteNote, updateNote } from '..
 import {Router} from 'express';
 import {getAllNotesSchema, noteIdSchema, createNoteSchema, updateNoteSchema} from "../validations/notesValidation.js";
 import {celebrate} from "celebrate";
+import { authenticate } from '../middleware/authenticate';
 
 export const router = Router();
+
+router.use('/notes', authenticate);
 
 router.get("/notes/:noteId", celebrate(noteIdSchema), getNoteById);
 
