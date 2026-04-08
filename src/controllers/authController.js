@@ -1,10 +1,10 @@
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
-import User from '../models/user.js';
-import { Session } from './models/session.js';
+import {User} from '../models/user.js';
+import { Session } from '../models/session.js';
 import { createSession, setSessionCookies } from '../services/auth.js';
 
-export const registerUser = async (res, req, next) => {
+export const registerUser = async (req, res, next) => {
   const { email, password, username } = req.body;
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -17,15 +17,15 @@ export const registerUser = async (res, req, next) => {
       email,
       password: hashedPassword,
     });
-    const createSession = await req.session.create(user._id);
-    setSessionCookies(res, createSession);
+    const session = await createSession(user._id);
+    setSessionCookies(res, session);
     res.status(201).json(user);
   } catch (error) {
     next(error);
   }
 };
 
-export const loginUser = async (res, req, next) => {
+export const loginUser = async (req, res, next) => {
   const{email,password}=req.body;
   try{
 const user = await User.findOne({email});
@@ -52,11 +52,11 @@ export const refreshUserSession = async(req,res, next) => {
 refreshToken : req.cookies.refreshToken,
     });
 if(!session){
-  createHttpError(401,'Session not found');
+ throw createHttpError(401,'Session not found');
 };
-const isRefreshTokenExpired = new Date > new Date(session.refreshTokenUntil);
+const isRefreshTokenExpired = new Date() > new Date(session.refreshTokenUntil);
 if(isRefreshTokenExpired){
-    createHttpError(401,'Session token expired');
+    throw createHttpError(401,'Session token expired');
 };
 await Session.deleteOne({
   _id:req.cookies.sessionId,
@@ -72,13 +72,13 @@ setSessionCookies(res, newSession);
 };
 
 
-export const logoutUser = async (res, req) => {
-const {sessionId}= req.body;
+export const logoutUser = async (req, res) => {
+const sessionId= req.cookies.sessionId;
 if(sessionId){
 await Session.deleteOne({_id: sessionId});
 res.clearCookie('sessionId');
-res.clearCookie('accessTocken');
-res.clearCookie('refreschTocken');
+res.clearCookie('accessToken');
+res.clearCookie('refreshToken');
 res.status(204).send();
 };
 };
