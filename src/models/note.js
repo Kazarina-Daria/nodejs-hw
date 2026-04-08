@@ -21,7 +21,7 @@ export const noteSchema = new mongoose.Schema(
     },
     userId: {
       type: Schema.Types.ObjectId,
-      ref : 'Note',
+      ref : 'User',
       required: true,
     }
   },

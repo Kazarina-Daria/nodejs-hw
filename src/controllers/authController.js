@@ -72,13 +72,19 @@ setSessionCookies(res, newSession);
 };
 
 
-export const logoutUser = async (req, res) => {
-const sessionId= req.cookies.sessionId;
+export const logoutUser = async (req, res, next) => {
+  try {
+const sessionId= req.sessionId;
 if(sessionId){
 await Session.deleteOne({_id: sessionId});
+}
 res.clearCookie('sessionId');
 res.clearCookie('accessToken');
 res.clearCookie('refreshToken');
+
 res.status(204).send();
+} catch (error){
+  next(error);
+}
 };
-};
+
