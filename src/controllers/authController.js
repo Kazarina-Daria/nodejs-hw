@@ -74,7 +74,7 @@ setSessionCookies(res, newSession);
 
 export const logoutUser = async (req, res, next) => {
   try {
-const sessionId= req.sessionId;
+const sessionId= req.cookies.sessionId;
 if(sessionId){
 await Session.deleteOne({_id: sessionId});
 }
