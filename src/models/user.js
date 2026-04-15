@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema(
     username: { type: String, trim: true },
     email: { type: String, trim: true, required: true, unique: true },
     password: { type: String, minlength: 8, required: true },
+    avatar: { type: String, required: false, default: 'https://ac.goit.global/fullstack/react/default-avatar.jpg' },
   },
   { timestamps: true },
 );
