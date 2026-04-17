@@ -13,6 +13,8 @@ return new Promise((resolve,reject)=>{
   const uploadStream = cloudinary.uploader.upload_stream({
     folder: 'user-app/avatars',
     resource_type: 'image',
+    overwrite: true,
+    unique_filename: false,
   },(err, result)=> (err ? reject(err) : resolve(result)),);
   Readable.from(buffer).pipe(uploadStream);
 });
