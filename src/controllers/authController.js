@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import {User} from '../models/user.js';
 import { Session } from '../models/session.js';
 import { createSession, setSessionCookies } from '../services/auth.js';
-import { sendMail } from '../utils/sendMail.js';
+import { sendEmail } from '../utils/sendMail.js';
 import handlebars from 'handlebars';
 import path from 'node:path';
 import fs from 'node:fs/promises';
@@ -106,7 +106,7 @@ export const requestResetEmail= async (req, res)=> {
    const resetToken = jwt.sign(
     {sub:user._id, email},
     process.env.JWT_SECRET,
-    {expireIn : "15m"}
+    {expiresIn : "15m"}
    );
 
 const templatePath = path.resolve('src/templates/reset-password-email.html');
@@ -117,7 +117,7 @@ const html = template({
   link: `${process.env.FRONTEND_DOMAIN}/reset-password?token=${resetToken}`,
 });
    try{
-    await sendMail({
+    await sendEmail({
       from : process.env.SMTP_FROM,
       to:email,
       subject:  'Reset your password',
